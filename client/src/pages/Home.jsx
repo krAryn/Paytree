@@ -14,6 +14,8 @@ const Home = () => {
     fetchUser()
   }, [])
 
+  
+
   return (
     <div className='main-banner'>
       <MainBanner />

@@ -18,6 +18,9 @@ import AddProduct from './pages/seller/AddProduct.jsx'
 import ProductsList from './pages/seller/ProductsList.jsx'
 import Orders from './pages/seller/Orders.jsx'
 import Contact from './pages/Contact.jsx'
+import Spinner from './components/Spinner.jsx'
+import PaymentSuccess from './components/PaymentSuccess.jsx'
+import PaymentFailed from './components/PaymentFailed.jsx'
 
 
 const App = () => {
@@ -53,6 +56,10 @@ const App = () => {
                         <Route path="orders" element={<Orders />} />
                     </Route>
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/spinner" element={<Spinner />} />
+                    <Route path="/paymentSuccess" element={<PaymentSuccess />} />
+                    <Route path="/paymentFailed" element={<PaymentFailed />} />
+                    
                 </Routes>
                 {!location.includes("seller") && !location.includes("login") && !location.includes("signup") && <Footer />}
         </div>

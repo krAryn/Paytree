@@ -1,19 +1,51 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppContext } from '../contexts/AppContext'
+import { useSearchParams } from 'react-router'
+import axios from 'axios'
+import PaymentSuccess from '../components/PaymentSuccess'
 
 const MyOrders = () => {
 
-    const {myOrders, fetchUserOrder} = useAppContext()
-
-    // console.log("My Orders page rendering!")
+    const {myOrders, fetchUserOrder, cartItems, setCartItems, user, navigate} = useAppContext()
+    const [searchParams, _] = useSearchParams()
+    const [showSuccessBar, setShowSuccessBar] = useState(false)
 
     useEffect(() => {
-        console.log("This is my orders rendering")
-        fetchUserOrder()
-    }, [])
+        
+        const sessionId = searchParams.get("session_id") 
+        if (sessionId) {
+            
+            const verifyPurchase = async () => {
+                // console.log("Verification.............")
+                const {data} = await axios.post("/api/order/verify", {sessionId})
+                if (data.paymentStatus === "paid"){
+                    console.log("Paid")
+                    setShowSuccessBar(true)
+                } else {
+                    setShowSuccessBar(false)
+                    console.log("Not Paid")
+                }
+            }
+
+            verifyPurchase().then(() => fetchUserOrder())
+            // if i remove then here, output is absurd.................. find it out **********************************************
+        } else {
+            fetchUserOrder()
+        }
+        console.log()
+            // console.log("Fetch Order.......")
+            
+        }, [])
+
+        useEffect(() => {
+            if (showSuccessBar) {
+                setCartItems({})
+            }
+        }, [showSuccessBar])
 
     return (
-        <div className='mt-16 flex flex-col px-6 md:px-16 lg:px-32'>
+        <div className='mt-16 flex flex-col px-6 md:px-16 lg:px-32 relative'>
+                {showSuccessBar && <PaymentSuccess />}
             <div className='flex flex-col items-end w-max mb-8'>
                 <p className='text-2xl font-medium uppercase'>My Orders</p>
                 <div className="w-16 rounded-full bg-primary h-0.5"></div>
@@ -33,7 +65,9 @@ const MyOrders = () => {
                                     className={`relative bg-white text-gray-500/70 ${order.items.length !== index + 1 && "border-b border-gray-300"}  flex flex-col md:flex-row md:items-center justify-between p-4 py-5 md:gap-16 w-full max-w-4xl`}
                                 >
                                     <div className="flex items-center mb-4 md:mb-0">
-                                        <div className="p-4 rounded-lg bg-primary/10">
+                                        <div className="p-4 rounded-lg bg-primary/10 cursor-pointer" onClick={() => {
+                                                navigate(`/allproducts/${item.product.category}/${item.product._id}`)
+                                            }}>
                                             <img src={item.product.image[0]} className='w-16 h-16' alt="" />
                                         </div>
                                         <div className="ml-4">

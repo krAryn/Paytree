@@ -42,6 +42,7 @@ const Cart = () => {
                 toast.error("Please select a Delivery Address!")
             } else {
                 if (paymentMode === "COD") {
+                    
                     const {data} = await axios.post("/api/order/cod", {
                         userId: user._id,
                         items: productsInCart.map(item => ({product: item._id, quantity: item.quantity})),
@@ -56,6 +57,14 @@ const Cart = () => {
                     } else {
                         toast.error(data.message)
                     }
+                } else if (paymentMode === "Online") {
+                    const {data} = await axios.post("/api/order/online", {
+                        userId: user._id,
+                        items: productsInCart.map(item => ({product: item._id, quantity: item.quantity})),
+                        address: currentAddress._id
+                    })
+
+                    window.open(data.url, "_self")
                 }
             }
         } catch (error) {
