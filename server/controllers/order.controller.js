@@ -82,7 +82,7 @@ export const placeOrderOnline = async (req, res) => {
         paymentType: "Online",
     })
 
-    const stripe = new Stripe("sk_test_51RN9W1FNDVSSS1tvozzLfYnf0lqMSU4eIsBpBViaCCMxCWIOGAM3yq1RbGSPFbv09Gkcrkawxb4QcRhpPVxaQ4BB00jwxY3YD9")
+    const stripe = new Stripe(process.env.STRIPE_SECRET)
 
     const shippingRate = await stripe.shippingRates.create({
         display_name: 'Ground shipping',
@@ -110,7 +110,7 @@ export const placeOrderOnline = async (req, res) => {
 export const verifyOnlineOrder = async (req, res) => {
     const { sessionId } = req.body;
 
-    const stripe = new Stripe("sk_test_51RN9W1FNDVSSS1tvozzLfYnf0lqMSU4eIsBpBViaCCMxCWIOGAM3yq1RbGSPFbv09Gkcrkawxb4QcRhpPVxaQ4BB00jwxY3YD9")
+    const stripe = new Stripe(process.env.STRIPE_SECRET)
 
     const session = await stripe.checkout.sessions.retrieve(sessionId)
 
